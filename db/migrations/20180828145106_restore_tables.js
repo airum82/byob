@@ -17,7 +17,7 @@ exports.up = function(knex, Promise) {
       table.string('address');
       table.integer('location_id').unsigned();
       table.foreign('location_id')
-        .references('location_id');
+        .references('locations.id');
 
       table.timestamps(true, true);
     })
@@ -26,7 +26,7 @@ exports.up = function(knex, Promise) {
 
 exports.down = function(knex, Promise) {
   return Promise.all([
-    knex.schema.dropTable('locations'),
-    knex.schema.dropTable('breweries')
+    knex.schema.dropTable('breweries'),
+    knex.schema.dropTable('locations')
   ])
 };
