@@ -54,9 +54,29 @@ app.get('/api/v1/breweries/:type', (request, response) => {
     })
 });
 
-app.post('/api/v1/locations');
+app.post('/api/v1/locations', (request, response) => {
+  const location = request.body;
 
-app.post('/api/v1/breweries');
+  for (let requiredParameter of ['city', 'state', 'zipcode']) {
+    if (!location[requiredParameter]) {
+      return response.status(422).json({
+        error: `Expected format: {city: <string>, state: <string>, zipcode: <string>}. You are missing a "${requiredParameter}" property`
+      });
+    }
+
+    database('locations').insert(location, 'id')
+      .then(location => {
+        return response.status(201).json({ id: project[0] });
+      })
+      .catch(err => {
+        return res.status(500).json({ err })
+      })
+  }
+});
+
+app.post('/api/v1/breweries', (request, response) => {
+  const brewery = request.body
+});
 
 app.delete('/api/v1/locations');
 
