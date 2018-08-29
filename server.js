@@ -32,24 +32,34 @@ app.get('/api/v1/breweries', (request, response) => {
     })
 });
 
-app.get('api/v1/locations/:state');
+app.get('/api/v1/locations/:state', (request, response) => {
+  const state = request.params.state.charAt(0).toUpperCase() + request.params.state.slice(1);
+  console.log(state);
+  database('locations').where('state', state).select()
+    .then(location => {
+      return response.status(200).json(location);
+    })
+    .catch(err => {
+      return res.status(500).json({ err })
+    })
+});
 
-app.get('api/v1/locations/:city');
+app.get('/api/v1/locations/:city');
 
 
-app.get('api/v1/breweries/:type');
+app.get('/api/v1/breweries/:type');
 
-app.post('api/v1/locations');
+app.post('/api/v1/locations');
 
-app.post('api/v1/breweries');
+app.post('/api/v1/breweries');
 
-app.delete('api/v1/locations');
+app.delete('/api/v1/locations');
 
-app.delete('api/v1/breweries');
+app.delete('/api/v1/breweries');
 
-app.put('api/v1/breweries/:name');
+app.put('/api/v1/breweries/:name');
 
-app.put('api/v1/locations/:city');
+app.put('/api/v1/locations/:city');
 
 app.listen(app.get('port'), () => {
   console.log(`you are listening on port ${app.get('port')}`)
