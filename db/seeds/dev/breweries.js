@@ -1,23 +1,49 @@
+const breweryList = require('../../../breweryData');
 
-exports.seed = function(knex, Promise) {
-  // Deletes ALL existing entries
-  return knex('locations').del()
-    .then(() => knex('breweries').del())
-    .then(() => {
-      // Inserts seed entries
-      return Promise.all([
-        
-        knex('locations').insert(
-          {id: 1, city: 'Dallas', state: 'Texas', zipcode: '75001'}, 'id'
-        )
-        .then(location => {
-          return knex('breweries').insert([
-            { id: 1, name: 'great big brewery', type: 'micro', address: '123 fake street', location_id: location[0] }
-          ])
-        })
-        .then(() => console.log('Seeding complete'))
-        .catch(err => console.log(`Error seeding data: ${err}`))
-      ])
+const createLocation = (knex, location) => {
+  return knex('locations').insert({
+    city: location.city,
+    state: location.state,
+    zipcode: location.postal_code
+  }, 'id')
+    .then(locationId => {
+      let breweries = [];
+
+      breweryList.forEach(brewery => {
+        if (brewery.city === location.city) {
+          breweries.push(
+            createBrewery(knex, {
+              name: brewery.name,
+              type: brewery.brewery_type,
+              address: brewery.street,
+              location_id: locationId[0]
+            })
+          )
+        }
+      });
+      return Promise.all(breweries);
     })
-    .catch(err => console.log(`Error seeding data: ${err}`))
+};
+
+const createBrewery = (knex, brewery) => {
+  return knex('breweries').insert(brewery);
+};
+
+exports.seed = (knex, Promise) => {
+  return knex('breweries').del()
+    .then(() => knex('locations').del())
+    .then(() => {
+      let locations = [];
+      let cityReference = [];
+
+      breweryList.forEach(location => {
+
+        if (!cityReference.includes(location.city)) {
+          cityReference.push(location.city)
+          locations.push(createLocation(knex, location));
+        }
+      });
+      return Promise.all(locations);
+    })
+    .catch(error => console.log(`Error seeding data: ${error}`));
 };
