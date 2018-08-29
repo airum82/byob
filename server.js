@@ -66,7 +66,7 @@ app.post('/api/v1/locations', (request, response) => {
 
     database('locations').insert(location, 'id')
       .then(location => {
-        return response.status(201).json({ id: project[0] });
+        return response.status(201).json({ id: location[0] });
       })
       .catch(err => {
         return res.status(500).json({ err })
@@ -93,9 +93,17 @@ app.post('/api/v1/breweries', (request, response) => {
   }
 });
 
-app.delete('/api/v1/locations');
+// app.delete('/api/v1/breweries/:name');
 
-app.delete('/api/v1/breweries');
+app.delete('/api/v1/breweries/:type', (request, response) => {
+  database('breweries').where('type', request.params.type).select().del()
+    .then(brewery => {
+      return response.status(200).json(`Breweries with the type of ${request.params.type} were successfully deleted`)
+    })
+    .catch(err => {
+      return res.status(500).json({ err })
+    })
+});
 
 app.put('/api/v1/breweries/:name');
 
