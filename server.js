@@ -32,10 +32,10 @@ app.get('/api/v1/breweries', (request, response) => {
     })
 });
 
-app.get('/api/v1/locations/:state', (request, response) => {
-  const state = request.params.state.charAt(0).toUpperCase() + request.params.state.slice(1);
-  console.log(state);
-  database('locations').where('state', state).select()
+app.get('/api/v1/locations/:city', (request, response) => {
+  const city = request.params.city.charAt(0).toUpperCase() + request.params.city.slice(1);
+  console.log(city);
+  database('locations').where('city', state).select()
     .then(location => {
       return response.status(200).json(location);
     })
@@ -44,10 +44,15 @@ app.get('/api/v1/locations/:state', (request, response) => {
     })
 });
 
-app.get('/api/v1/locations/:city');
-
-
-app.get('/api/v1/breweries/:type');
+app.get('/api/v1/breweries/:type', (request, response) => {
+  database('breweries').where('type', request.params.type).select()
+    .then(brewery => {
+      return response.status(200).json(brewery);
+    })
+    .catch(err => {
+      return res.status(500).json({ err })
+    })
+});
 
 app.post('/api/v1/locations');
 
