@@ -13,7 +13,7 @@ const createLocation = (knex, location) => {
         if (brewery.city === location.city) {
           breweries.push(
             createBrewery(knex, {
-              name: brewery.name,
+              name: brewery.name.toUpperCase(),
               type: brewery.brewery_type,
               address: brewery.street,
               location_id: locationId[0]

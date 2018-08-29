@@ -93,11 +93,22 @@ app.post('/api/v1/breweries', (request, response) => {
   }
 });
 
-// app.delete('/api/v1/breweries/:name');
+app.delete('/api/v1/breweries/:name', (request, response) => {
+  const upperCase = request.params.name.toUpperCase();
+  const name = upperCase.replace(/-/g, ' ');
+  console.log(name)
+  database('breweries').where('name', name).select().del()
+    .then(() => {
+      return response.status(200).json(`${request.params.name} was successfully deleted`)
+    })
+    .catch(err => {
+      return res.status(500).json({ err })
+    })
+});
 
 app.delete('/api/v1/breweries/:type', (request, response) => {
   database('breweries').where('type', request.params.type).select().del()
-    .then(brewery => {
+    .then(() => {
       return response.status(200).json(`Breweries with the type of ${request.params.type} were successfully deleted`)
     })
     .catch(err => {
