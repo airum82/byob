@@ -76,6 +76,21 @@ app.post('/api/v1/locations', (request, response) => {
 
 app.post('/api/v1/breweries', (request, response) => {
   const brewery = request.body
+
+  for (let requiredParameter of ['name', 'type', 'address']) {
+    if (!brewery[requiredParameter]) {
+      return response.status(422).json({
+        error: `Expected format: {name: <string>, type: <string>, address: <string>}. You are missing a "${requiredParameter}" property`
+      });
+    }
+    database('breweries').insert(brewery, 'id')
+      .then(brewery => {
+        return response.status(201).json({ id: brewery[0] })
+      })
+      .catch(err => {
+        return res.status(500).json({ err })
+      })
+  }
 });
 
 app.delete('/api/v1/locations');
