@@ -116,9 +116,29 @@ app.delete('/api/v1/breweries/:type', (request, response) => {
     })
 });
 
-app.put('/api/v1/breweries/:name');
+app.put('/api/v1/breweries/:name', (request, response) => {
+  const name = request.params.name.toUpperCase();
+  database('breweries').where('name', name).select()
+    .update(request.body)
+    .then(() => {
+      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.name} was succesfully updated`)
+    })
+    .catch(err => {
+      return response.status(422).json(`Propery ${Object.keys(request.body)[0]} does not exist or invalid format`)
+    })
+});
 
-app.put('/api/v1/locations/:city');
+app.put('/api/v1/locations/:city', (request, response) => {
+  const city = request.params.city.charAt(0).toUpperCase() + request.params.city.slice(1);
+  database('locations').where('city', city).select()
+    .update(request.body)
+    .then(() => {
+     return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was succesfully updated`);
+    })
+    .catch(err => {
+      return response.status(422).json(`Propery ${Object.keys(request.body)[0]} does not exist or invalid format`)
+    })
+});
 
 app.listen(app.get('port'), () => {
   console.log(`you are listening on port ${app.get('port')}`)
