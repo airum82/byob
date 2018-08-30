@@ -12,6 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3001);
 app.set('secretKey', 'iamnotasthinkasyoudrunkiam');
 
+app.use(express.static('public'));
+
 const checkAuth = (request, response, next) => {
   const { token, appName } = request.body;
   const cert = app.get('secretKey');
