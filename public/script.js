@@ -3,7 +3,7 @@ const submitTokenRequest = () => {
   const email = document.querySelector('.email');
   const appName = document.querySelector('.app-name');
   console.log(email.value, appName.value)
-  fetch('http://localhost:3001/api/v1/access', {
+  fetch('/api/v1/access', {
     method: 'POST',
     headers: { 'Content-type': 'application/json'},
     body: JSON.stringify({ 
