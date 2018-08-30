@@ -1,15 +1,45 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+const jwt = require('jsonwebtoken');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set('port', process.env.PORT || 3001);
+app.set('secretKey', 'iamnotasthinkasyoudrunkiam');
+
+const checkAuth = (request, response, next) => {
+  const { token, appName } = request.body;
+  const cert = app.get('secretKey');
+  if(!token) {
+    return response.status(403).send('You must be most important to access this endpoint');
+  } else {
+    jwt.verify(token, cert, (err, decoded) => {
+      if(err) {
+        return response.status(403).send('Invalid Token')
+      } else {
+        const validApps = ['my-app', 'your-app', 'he/she/it-app'];
+        if(validApps.some(app => app === appName)) {
+          request.decoded = decoded;
+          next();
+        } else {
+          return response.status(403).send('Not registered app');
+        }
+      }
+    })
+  }
+}
+
+app.post('/api/v1/access', (request, response) => {
+  const {appName, email} = request.body;
+  const cert = app.get('secretKey');
+  const token = jwt.sign({ appName, email}, cert, { expiresIn: '72h' });
+  return response.status(201).json({ token });
+})
 
 app.get('/api/v1/locations', (request, response) => {
   database('locations').select()
@@ -22,7 +52,6 @@ app.get('/api/v1/locations', (request, response) => {
 })
 
 app.get('/api/v1/breweries', (request, response) => {
-
   database('breweries').select()
     .then(breweries => {
       return response.status(200).json(breweries);
@@ -93,20 +122,23 @@ app.post('/api/v1/breweries', (request, response) => {
   }
 });
 
-app.delete('/api/v1/breweries/:name', (request, response) => {
+app.delete('/api/v1/breweries/:name', checkAuth, (request, response) => {
   const upperCase = request.params.name.toUpperCase();
   const name = upperCase.replace(/-/g, ' ');
-  console.log(name)
   database('breweries').where('name', name).select().del()
-    .then(() => {
-      return response.status(200).json(`${request.params.name} was successfully deleted`)
+    .then((result) => {
+      if(result) {
+        return response.status(200).json(`${name} was successfully deleted`)
+      } else {
+        return response.status(404).json(`${name} does not exist`);
+      }
     })
     .catch(err => {
       return res.status(500).json({ err })
     })
 });
 
-app.delete('/api/v1/breweries/:type', (request, response) => {
+app.delete('/api/v1/breweries/:type', checkAuth, (request, response) => {
   database('breweries').where('type', request.params.type).select().del()
     .then(() => {
       return response.status(200).json(`Breweries with the type of ${request.params.type} were successfully deleted`)
@@ -116,7 +148,7 @@ app.delete('/api/v1/breweries/:type', (request, response) => {
     })
 });
 
-app.put('/api/v1/breweries/:name', (request, response) => {
+app.put('/api/v1/breweries/:name', checkAuth, (request, response) => {
   const name = request.params.name.toUpperCase();
   database('breweries').where('name', name).select()
     .update(request.body)
@@ -128,7 +160,7 @@ app.put('/api/v1/breweries/:name', (request, response) => {
     })
 });
 
-app.put('/api/v1/locations/:city', (request, response) => {
+app.put('/api/v1/locations/:city', checkAuth, (request, response) => {
   const city = request.params.city.charAt(0).toUpperCase() + request.params.city.slice(1);
   database('locations').where('city', city).select()
     .update(request.body)
