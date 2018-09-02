@@ -88,7 +88,7 @@ app.get('/api/v1/breweries/:type', (request, response) => {
 app.post('/api/v1/locations', (request, response) => {
   const location = request.body;
 
-  for (let requiredParameter of ['city', 'state', 'zipcode']) {
+  for (let requiredParameter of ['state']) {
     if (!location[requiredParameter]) {
       return response.status(422).json({
         error: `Expected format: {city: <string>, state: <string>, zipcode: <string>}. You are missing a "${requiredParameter}" property`
@@ -100,7 +100,7 @@ app.post('/api/v1/locations', (request, response) => {
         return response.status(201).json({ id: location[0] });
       })
       .catch(err => {
-        return res.status(500).json({ err })
+        return response.status(500).json({ err })
       })
   }
 });
@@ -108,7 +108,7 @@ app.post('/api/v1/locations', (request, response) => {
 app.post('/api/v1/breweries', (request, response) => {
   const brewery = request.body
 
-  for (let requiredParameter of ['name', 'type', 'address']) {
+  for (let requiredParameter of ['type']) {
     if (!brewery[requiredParameter]) {
       return response.status(422).json({
         error: `Expected format: {name: <string>, type: <string>, address: <string>}. You are missing a "${requiredParameter}" property`
