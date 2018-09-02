@@ -155,9 +155,9 @@ describe('DELETE /api/v1/byob', () => {
       .delete('/api/v1/breweries/brewmented')
       .send(
         {
-          "appName": "he/she/it-app",
-          "email": "my-app@mapp.com",
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXktYXBwIiwiZW1haWwiOiJteS1hcHBAbWFwcC5jb20iLCJpYXQiOjE1MzU2Njc1NTEsImV4cCI6MTUzNTkyNjc1MX0.Wg6OVutMx78KJ-ESKA4JET4r9eDTUPc-0-CfxNMeMm8"
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
         }
       )
       .end((err, response) => {
@@ -167,19 +167,53 @@ describe('DELETE /api/v1/byob', () => {
       });
   });
 
+  it('should error out if brewery name does not exist', done => {
+    chai.request(server)
+      .delete('/api/v1/breweries/brwmnted')
+      .send(
+        {
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        response.should.have.status(404);
+        response.body.should.equal('BRWMNTED does not exist');
+        done();
+      });
+  });
+
   it('should remove all breweries from the database by type', (done) => {
     chai.request(server)
       .delete('/api/v1/breweries/by/brewpub')
       .send(
         {
-          "appName": "he/she/it-app",
-          "email": "my-app@mapp.com",
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXktYXBwIiwiZW1haWwiOiJteS1hcHBAbWFwcC5jb20iLCJpYXQiOjE1MzU2Njc1NTEsImV4cCI6MTUzNTkyNjc1MX0.Wg6OVutMx78KJ-ESKA4JET4r9eDTUPc-0-CfxNMeMm8"
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
         }
       )
       .end((err, response) => {
         response.should.have.status(200);
         response.body.should.equal('Breweries with the type of brewpub were successfully deleted');
+        done();
+      });
+  });
+
+  it.only('should error out if brewery type does not exist', (done) => {
+    chai.request(server)
+      .delete('/api/v1/breweries/by/bullshit')
+      .send(
+        {
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        response.should.have.status(404);
+        response.body.should.equal('err');
         done();
       });
   });

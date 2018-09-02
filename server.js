@@ -24,7 +24,7 @@ const checkAuth = (request, response, next) => {
       if (err) {
         return response.status(403).send('Invalid Token')
       } else {
-        const validApps = ['my-app', 'your-app', 'he/she/it-app'];
+        const validApps = ['my-app', 'your-app', 'he/she/it-app', 'why-tho'];
         if (validApps.some(app => app === appName)) {
           request.decoded = decoded;
           next();
@@ -155,10 +155,10 @@ app.put('/api/v1/breweries/:name', checkAuth, (request, response) => {
   database('breweries').where('name', name).select()
     .update(request.body)
     .then(() => {
-      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.name} was succesfully updated`)
+      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.name} was successfully updated`)
     })
     .catch(err => {
-      return response.status(422).json(`Propery ${Object.keys(request.body)[0]} does not exist or invalid format`)
+      return response.status(422).json(`Property ${Object.keys(request.body)[0]} does not exist or invalid format`)
     })
 });
 
@@ -167,10 +167,10 @@ app.put('/api/v1/locations/:city', checkAuth, (request, response) => {
   database('locations').where('city', city).select()
     .update(request.body)
     .then(() => {
-      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was succesfully updated`);
+      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was successfully updated`);
     })
     .catch(err => {
-      return response.status(422).json(`Propery ${Object.keys(request.body)[0]} does not exist or invalid format`)
+      return response.status(422).json(`Property ${Object.keys(request.body)[0]} does not exist or invalid format`)
     })
 });
 
