@@ -201,7 +201,7 @@ describe('DELETE /api/v1/byob', () => {
       });
   });
 
-  it.only('should error out if brewery type does not exist', (done) => {
+  it('should error out if brewery type does not exist', (done) => {
     chai.request(server)
       .delete('/api/v1/breweries/by/bullshit')
       .send(
@@ -213,7 +213,7 @@ describe('DELETE /api/v1/byob', () => {
       )
       .end((err, response) => {
         response.should.have.status(404);
-        response.body.should.equal('err');
+        response.body.should.equal('bullshit does not exist');
         done();
       });
   });
