@@ -17,15 +17,15 @@ app.use(express.static('public'));
 const checkAuth = (request, response, next) => {
   const { token, appName } = request.body;
   const cert = app.get('secretKey');
-  if(!token) {
+  if (!token) {
     return response.status(403).send('You must be most important to access this endpoint');
   } else {
     jwt.verify(token, cert, (err, decoded) => {
-      if(err) {
+      if (err) {
         return response.status(403).send('Invalid Token')
       } else {
         const validApps = ['my-app', 'your-app', 'he/she/it-app'];
-        if(validApps.some(app => app === appName)) {
+        if (validApps.some(app => app === appName)) {
           request.decoded = decoded;
           next();
         } else {
@@ -37,9 +37,9 @@ const checkAuth = (request, response, next) => {
 }
 
 app.post('/api/v1/access', (request, response) => {
-  const {appName, email} = request.body;
+  const { appName, email } = request.body;
   const cert = app.get('secretKey');
-  const token = jwt.sign({ appName, email}, cert, { expiresIn: '72h' });
+  const token = jwt.sign({ appName, email }, cert, { expiresIn: '72h' });
   return response.status(201).json({ token });
 })
 
@@ -66,7 +66,7 @@ app.get('/api/v1/breweries', (request, response) => {
 app.get('/api/v1/locations/:city', (request, response) => {
   const city = request.params.city.charAt(0).toUpperCase() + request.params.city.slice(1);
   console.log(city);
-  database('locations').where('city', state).select()
+  database('locations').where('city', city).select()
     .then(location => {
       return response.status(200).json(location);
     })
@@ -129,7 +129,7 @@ app.delete('/api/v1/breweries/:name', checkAuth, (request, response) => {
   const name = upperCase.replace(/-/g, ' ');
   database('breweries').where('name', name).select().del()
     .then((result) => {
-      if(result) {
+      if (result) {
         return response.status(200).json(`${name} was successfully deleted`)
       } else {
         return response.status(404).json(`${name} does not exist`);
@@ -167,7 +167,7 @@ app.put('/api/v1/locations/:city', checkAuth, (request, response) => {
   database('locations').where('city', city).select()
     .update(request.body)
     .then(() => {
-     return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was succesfully updated`);
+      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was succesfully updated`);
     })
     .catch(err => {
       return response.status(422).json(`Propery ${Object.keys(request.body)[0]} does not exist or invalid format`)
@@ -177,3 +177,5 @@ app.put('/api/v1/locations/:city', checkAuth, (request, response) => {
 app.listen(app.get('port'), () => {
   console.log(`you are listening on port ${app.get('port')}`)
 })
+
+module.exports = app;

@@ -14,11 +14,23 @@ module.exports = {
     useNullAsDefault: true
   },
 
+  test: {
+    client: 'pg',
+    connection: 'postgres://localhost/byob_test',
+    migrations: {
+      directory: './db/migrations'
+    },
+    seeds: {
+      directory: './db/seeds/dev'
+    },
+    useNullAsDefault: true
+  },
+
   staging: {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
+      user: 'username',
       password: 'password'
     },
     pool: {
@@ -41,5 +53,4 @@ module.exports = {
       directory: './db/migrations'
     }
   }
-
 };
