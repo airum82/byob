@@ -141,3 +141,46 @@ describe('POST /api/v1/byob', () => {
       });
   })
 });
+
+describe('DELETE /api/v1/byob', () => {
+  beforeEach(done => {
+    dataBase.migrate.rollback()
+      .then(() => dataBase.migrate.latest())
+      .then(() => dataBase.seed.run())
+      .then(() => done())
+  });
+
+  it('should remove a brewery from the database by name', done => {
+    chai.request(server)
+      .delete('/api/v1/breweries/brewmented')
+      .send(
+        {
+          "appName": "he/she/it-app",
+          "email": "my-app@mapp.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXktYXBwIiwiZW1haWwiOiJteS1hcHBAbWFwcC5jb20iLCJpYXQiOjE1MzU2Njc1NTEsImV4cCI6MTUzNTkyNjc1MX0.Wg6OVutMx78KJ-ESKA4JET4r9eDTUPc-0-CfxNMeMm8"
+        }
+      )
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.body.should.equal('BREWMENTED was successfully deleted');
+        done();
+      });
+  });
+
+  it('should remove all breweries from the database by type', (done) => {
+    chai.request(server)
+      .delete('/api/v1/breweries/by/brewpub')
+      .send(
+        {
+          "appName": "he/she/it-app",
+          "email": "my-app@mapp.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoibXktYXBwIiwiZW1haWwiOiJteS1hcHBAbWFwcC5jb20iLCJpYXQiOjE1MzU2Njc1NTEsImV4cCI6MTUzNTkyNjc1MX0.Wg6OVutMx78KJ-ESKA4JET4r9eDTUPc-0-CfxNMeMm8"
+        }
+      )
+      .end((err, response) => {
+        response.should.have.status(200);
+        response.body.should.equal('Breweries with the type of brewpub were successfully deleted');
+        done();
+      });
+  });
+});

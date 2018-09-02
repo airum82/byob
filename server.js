@@ -140,7 +140,7 @@ app.delete('/api/v1/breweries/:name', checkAuth, (request, response) => {
     })
 });
 
-app.delete('/api/v1/breweries/:type', checkAuth, (request, response) => {
+app.delete('/api/v1/breweries/by/:type', checkAuth, (request, response) => {
   database('breweries').where('type', request.params.type).select().del()
     .then(() => {
       return response.status(200).json(`Breweries with the type of ${request.params.type} were successfully deleted`)
