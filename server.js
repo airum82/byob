@@ -155,26 +155,29 @@ app.delete('/api/v1/breweries/by/:type', checkAuth, (request, response) => {
 });
 
 app.put('/api/v1/breweries/:name', checkAuth, (request, response) => {
-  const name = request.params.name.toUpperCase();
+  const upperCase = request.params.name.toUpperCase();
+  const name = upperCase.replace(/-/g, ' ');
+  const property = { type: request.body.type } || { name: request.body.name } || { address: request.body.address };
   database('breweries').where('name', name).select()
-    .update(request.body)
+    .update(property)
     .then(() => {
-      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.name} was successfully updated`)
+      return response.json(`Property ${Object.keys(property)[0]} of ${request.params.name} was successfully updated`)
     })
     .catch(err => {
-      return response.status(422).json(`Property ${Object.keys(request.body)[0]} does not exist or invalid format`)
+      return response.status(422).json(`Property does not exist or invalid format`)
     })
 });
 
 app.put('/api/v1/locations/:city', checkAuth, (request, response) => {
   const city = request.params.city.charAt(0).toUpperCase() + request.params.city.slice(1);
+  const property = { state: request.body.state } || { city: request.body.city } || { zipcode: request.body.zipcode };
   database('locations').where('city', city).select()
-    .update(request.body)
+    .update(property)
     .then(() => {
-      return response.json(`Property ${Object.keys(request.body)[0]} of ${request.params.city} was successfully updated`);
+      return response.json(`Property ${Object.keys(property)[0]} of ${request.params.city} was successfully updated`);
     })
     .catch(err => {
-      return response.status(422).json(`Property ${Object.keys(request.body)[0]} does not exist or invalid format`)
+      return response.status(422).json(`Property does not exist or invalid format`)
     })
 });
 

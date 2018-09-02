@@ -218,3 +218,82 @@ describe('DELETE /api/v1/byob', () => {
       });
   });
 });
+
+describe('PUT /api/v1/breweries or /api/v1/locations', () => {
+  beforeEach(done => {
+    dataBase.migrate.rollback()
+      .then(() => dataBase.migrate.latest())
+      .then(() => dataBase.seed.run())
+      .then(() => done())
+  });
+
+  it('should let you update selected property of a location', (done) => {
+    chai.request(server)
+      .put('/api/v1/locations/denver')
+      .send(
+        {
+          "state": "Utah",
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        console.log(response.body)
+        response.body.should.equal("Property state of denver was successfully updated")
+        done();
+      })
+  })
+
+  it('should error if property or city does not exist', (done) => {
+    chai.request(server)
+      .put('/api/v1/locations/denver')
+      .send(
+        {
+          "demos": "many",
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        response.body.should.equal("Property does not exist or invalid format")
+        done();
+      })
+  })
+
+  it('should let you update selected property of a brewery', (done) => {
+    chai.request(server)
+      .put('/api/v1/breweries/brewmented')
+      .send(
+        {
+          "type": "macro",
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        console.log(response.body)
+        response.body.should.equal("Property type of brewmented was successfully updated")
+        done();
+      })
+  })
+
+  it('should error if property or city does not exist', (done) => {
+    chai.request(server)
+      .put('/api/v1/locations/brewmented')
+      .send(
+        {
+          "demos": "many",
+          "appName": "why-tho",
+          "email": "123@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBOYW1lIjoid2h5LXRobyIsImVtYWlsIjoiMTIzQGdtYWlsLmNvbSIsImlhdCI6MTUzNTkyNzE2NCwiZXhwIjoxNTM2MTg2MzY0fQ.qQcc11cuR3yP4hrMn_vf2KgRLhXUfBoPOaNaKZgRqA0"
+        }
+      )
+      .end((err, response) => {
+        response.body.should.equal("Property does not exist or invalid format")
+        done();
+      })
+  })
+})
