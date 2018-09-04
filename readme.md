@@ -20,6 +20,13 @@ You can fetch information from the API by 4 different methods:
 
 Making POST requests:
 
-1. To make a POST request to add a new location, use the url: https://arram-byob.herokuapp.com/api/v1/location. You must include the city, state and a zipcode in the body like so: { city: 'Sacramento', state: 'California', zipcode: 54326 }
+1. To make a POST request to add a new location, use the url: https://arram-byob.herokuapp.com/api/v1/location. You must include the city, state and a zipcode in the body like so: { city: 'Sacramento', state: 'California', zipcode: 54326 }.
+
+2. To make a POST Request to add a new brewery, use the url: http://arram-byob.herokuapp.com/api/v1/breweries. You much include a name, type and an address in the body like so: { name: 'great awesome brewery', type: 'brewpub', address: '123 fake street' }.
+
+Making DELETE requests:
+
+1. To make a DELETE request to remove a brewery by name, use the url: https://arram-byob.herokuapp.com/api/v1/breweries/:name.
+You must replace :name with the name of the brewery you want to delete. If the name is multiple words you must separate them with dashes in the url ex: https://arram-byob.herokuapp.com/api/v1/breweries/great-awesome-brewery. You must supply your json web token in the body to delete the brewery ex: { token: 'dk593kfovkec9i43hndf' }.
 
  
