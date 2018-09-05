@@ -1,7 +1,16 @@
 language: node_js
 node_js:
-  - "node"
+- node
 services:
-  - postgresql
+- postgresql
 before_script:
-  - psql -c 'CREATE DATABASE byob_test;' -U postgres
+- psql -c 'CREATE DATABASE byob_test;' -U postgres
+notifications:
+  email: false
+deploy:
+  provider: heroku
+  api_key:
+    secure: baUisHcB7ARq5/BI6jXyBG0s6xeC1YDPYqWkVCAh+4q8UC4D1MXuowOkZMgA5afN7GWq75MNE679GqcaMhqf1Pj9R7quh2qekzMfhp8RFF3WjJDZCGIRRjaHuKUeIMNGmicuSxzy5Xy7gf04hBDBdd7wuvG4ufB/53tNK+WsydX1Nn8j2PIn9pmRCkFLbwI9c3vszCq7v/2b3bZjmDFsa0I47RQ8XxHla9kVx73CTdtvHJOUNuWxKaduAXscPO42sO2k19OZap3Heq6vs2ft1NDashoIGvzF1k1YEU4RD9O+naJVNd00nibRjLKPDZ3aK1164XLkQG5YWM5/DOu5FtQlDvTqmLo9j19MEBk7W67pKjMWy8TNZJ91z7XpIqDO6ETne09odA8A/WF9/hYs8woSoYZdZ/ZfRV31Jezcb6Zd6CDzsm1n833/H0/Gb/hel1jta6sy3qf1ndn+f1cM/IeyyzMkqwhrLt4Ss5BeMMo1LSblEMTOWF3ui0FSN1yBUbLcjT7AMx9cguJOyJbKqFwd4OXVUbtq8maAdYT9WBunFXKHSGM0nHAbAbZNzeCAZVsdIBLLHFAJxv1hynhZV+Qf2uWJz6KCSoPjEcVcMUoX2luc1P+kfGHOBoVhA3dRIfgRYx4+KZFwEKx6XC2ZP3xtAb85edOvKHGbv+SbLnc=
+    app: arram-byob
+    skip_cleanup: true
+  
